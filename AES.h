@@ -25,6 +25,9 @@ public:
 		if (i%16 != 15) printf("\n");
 	}
 
+	static void testAES(int aestype, int keylen, int repeat_time);
+	static void demoAES();
+
 private:
 	static uint8_t sbox[256];
 	static uint8_t inv_sbox[256];
@@ -45,13 +48,14 @@ private:
 	void add_round_key(uint8_t *state, int rnd);
 	void sub_bytes(uint8_t *state){_sub_bytes(state,sbox);}
 	void mix_columns(uint8_t *state){_mix_columns(state,false);}
-	void shift_rows(uint8_t *state);
+	void shift_rows(uint8_t *state){_shift_rows(state,false);}
 	void inv_sub_bytes(uint8_t *state){_sub_bytes(state,inv_sbox);}
 	void inv_mix_columns(uint8_t *state){_mix_columns(state,true);}
-	void inv_shift_rows(uint8_t *state);
+	void inv_shift_rows(uint8_t *state){_shift_rows(state,true);}
 
 	void _sub_bytes(uint8_t *state, uint8_t *box);
 	void _mix_columns(uint8_t *state, bool isinv);
+	void _shift_rows(uint8_t *state, bool isinv);
 };
 
 

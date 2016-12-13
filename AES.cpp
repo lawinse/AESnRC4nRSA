@@ -175,7 +175,7 @@ void AES::_mix_columns(uint8_t *state, bool isinv) {
 	}
 }
 
-void AES::shift_rows(uint8_t *state) {
+void AES::_shift_rows(uint8_t *state, bool isinv) {
 	static int LARGE[]={0,1,2,4};
 	static int SMALL[]={0,1,2,3};
 
@@ -184,30 +184,19 @@ void AES::shift_rows(uint8_t *state) {
 	for (int i=1; i<4; ++i) {
 		int t = 0;
 		while (t<dist[i]){
-			tmp = state[Nb*i+0];
-			for (int j = 1; j < Nb; j++) {
-				state[Nb*i+j-1] = state[Nb*i+j];
+			if (!isinv){
+				tmp = state[Nb*i+Nb-1];
+				for (int j = Nb-1; j > 0; --j) {
+					state[Nb*i+j] = state[Nb*i+j-1];
+				}
+				state[Nb*i+0] = tmp;
+			} else {
+				tmp = state[Nb*i+0];
+				for (int j = 1; j < Nb; ++j) {
+					state[Nb*i+j-1] = state[Nb*i+j];
+				}
+				state[Nb*i+Nb-1] = tmp;
 			}
-			state[Nb*i+Nb-1] = tmp;
-			++t;
-		}
-	}
-}
-
-void AES::inv_shift_rows(uint8_t *state) {
-	static int LARGE[]={0,1,2,4};
-	static int SMALL[]={0,1,2,3};
-
-	int *dist = Nb>6?LARGE:SMALL;
-	uint8_t tmp;
-	for (int i=1; i<4; ++i) {
-		int t = 0;
-		while (t<dist[i]){
-			tmp = state[Nb*i+Nb-1];
-			for (int j = Nb-1; j > 0; j--) {
-				state[Nb*i+j] = state[Nb*i+j-1];
-			}
-			state[Nb*i+0] = tmp;
 			++t;
 		}
 	}
@@ -254,7 +243,8 @@ uint8_t AES::inv_sbox[256] = {
 };
 
 
-void demoAES() {
+void AES::demoAES() {
+	printf("Demoing AES ... \n");
 	uint8_t key[] = {
 		0x00, 0x01, 0x02, 0x03,
 		0x04, 0x05, 0x06, 0x07,
@@ -263,12 +253,14 @@ void demoAES() {
 		0x10, 0x11, 0x12, 0x13,
 		0x14, 0x15, 0x16, 0x17,
 		0x18, 0x19, 0x1a, 0x1b,
-		0x1c, 0x1d, 0x1e, 0x1f};
-	 // uint8_t key[] = {
-		// 0x00, 0x01, 0x02, 0x03, 
-		// 0x04, 0x05, 0x06, 0x07, 
-		// 0x08, 0x09, 0x0a, 0x0b, 
-		// 0x0c, 0x0d, 0x0e, 0x0f}; 
+		0x1c, 0x1d, 0x1e, 0x1f
+	};
+	// uint8_t key[] = {
+	// 	0x00, 0x01, 0x02, 0x03, 
+	// 	0x04, 0x05, 0x06, 0x07, 
+	// 	0x08, 0x09, 0x0a, 0x0b, 
+	// 	0x0c, 0x0d, 0x0e, 0x0f
+	// }; 
 
 	uint8_t in[] = {
 		0x00, 0x11, 0x22, 0x33,
@@ -278,24 +270,24 @@ void demoAES() {
 		0xcc, 0xdd, 0xee, 0xff,
 		0xcc, 0xdd, 0xee, 0xff,
 		0x88, 0x99, 0xaa, 0xbb,
-		0xcc, 0xdd, 0xee, 0xff};
+		0xcc, 0xdd, 0xee, 0xff
+	};
 	
-	uint8_t out[sizeof(in)]; // 128
-	uint8_t din[sizeof(in)];
+	uint8_t *out = new uint8_t[sizeof(in)];
+	uint8_t *din = new uint8_t[sizeof(in)];
 	printf("original msg:\n");
 	int i;
-	for (i = 0; i < sizeof(in)/4; ++i) {
-		printf("%x %x %x %x ", in[4*i+0], in[4*i+1], in[4*i+2], in[4*i+3]);
+	for (i = 0; i < sizeof(in); ++i) {
+		printf("%x ", in[i]);
 	}
 	printf("\n");
 	AES aes(key,sizeof(key),sizeof(in)*BITS_PER_BYTES);
 	// aes.show_kep();
 	aes.cipher(in,out);
 
-	printf("out:\n");
-	
-	for (i = 0; i < sizeof(in)/4; ++i) {
-		printf("%x %x %x %x ", out[4*i+0], out[4*i+1], out[4*i+2], out[4*i+3]);
+	printf("cipher msg:\n");
+	for (i = 0; i < sizeof(in); ++i) {
+		printf("%x ", out[i]);
 	}
 	printf("\n");
 
@@ -303,13 +295,15 @@ void demoAES() {
 	daes.decipher(out,din);
 	// daes.show_kep();
 	printf("decipher msg:\n");
-	for (i = 0; i < sizeof(in)/4; ++i) {
-		printf("%x %x %x %x ", din[4*i+0], din[4*i+1], din[4*i+2], din[4*i+3]);
+	for (i = 0; i < sizeof(in); ++i) {
+		printf("%x ", din[i]);
 	}
 	printf("\n");
+	delete [] out;
+	delete [] din;
 }
 
-void testAES(int aestype=128, int keylen=192, int repeat_time=1000) {
+void AES::testAES(int aestype=128, int keylen=192, int repeat_time=1000) {
 	assert(keylen == 192 || keylen == 128 || keylen == 256);
 	assert(aestype == 192 || aestype == 128 || aestype == 256);
 	printf("Testing AES%d with keylen %d ...\n", aestype,keylen);
@@ -321,7 +315,7 @@ void testAES(int aestype=128, int keylen=192, int repeat_time=1000) {
 	uint8_t *out = new uint8_t[aestype/BITS_PER_BYTES];
 	uint8_t *din = new uint8_t[aestype/BITS_PER_BYTES];
 	
-	// first generate key;
+	// first generate key
 	for (int i=0; i<keylen/BITS_PER_BYTES; ++i) key[i] = rand()%MAX_VALUE;
 	AES aes(key,keylen/BITS_PER_BYTES,aestype), daes(key,keylen/BITS_PER_BYTES,aestype);
 	// second generate input
@@ -339,9 +333,9 @@ void testAES(int aestype=128, int keylen=192, int repeat_time=1000) {
 		}
 	}
 	printf("[Test Result] Passed all %d tests !!!\n",repeat_time );
-	fflush(stdout);
-
+	
 	TEST_FIN:
+	fflush(stdout);
 	delete [] key;
 	delete [] in;
 	delete [] out;
@@ -352,7 +346,7 @@ int main(int argc, char const *argv[])
 {
 	for (int type=128;type<=256;type+=64)
 		for (int klen=128;klen<=256;klen+=64)
-			testAES(type,klen);
-	// demoAES();
+			AES::testAES(type,klen);
+	AES::demoAES();
 	return 0;
 }
