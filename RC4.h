@@ -19,7 +19,7 @@ public:
 	void cipher(uint8_t *in, int len, uint8_t *out, uint8_t *ks);
 	void decipher(uint8_t *in, int len, uint8_t *out, uint8_t *ks);
 
-	static void testRC4(int keylen, int txtlen, int repeat_time);
+	static void testRC4(int keylen, int txtlen, int repeat_time=1000);
 	static void demoRC4();
 private:
 	int keylen;

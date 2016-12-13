@@ -40,7 +40,7 @@ void RC4::decipher(uint8_t *in, int len, uint8_t *out, uint8_t *ks) {
 	}
 }
 
-void RC4::testRC4(int keylen, int txtlen, int repeat_time=1000) {
+void RC4::testRC4(int keylen, int txtlen, int repeat_time) {
 	assert(keylen > 4 || txtlen >= keylen);
 	printf("Testing RC4 with keylen %d and txtlen %d ...\n",keylen,txtlen);
 	fflush(stdout);
@@ -130,13 +130,6 @@ void RC4::demoRC4() {
 		printf("%x ", din[i]);
 	}
 	printf("\n");
-}
-
-int main(int argc, char const *argv[])
-{
-	RC4::testRC4(128,1024);
-	RC4::demoRC4();
-	return 0;
 }
 
 

@@ -303,7 +303,7 @@ void AES::demoAES() {
 	delete [] din;
 }
 
-void AES::testAES(int aestype=128, int keylen=192, int repeat_time=1000) {
+void AES::testAES(int aestype, int keylen, int repeat_time) {
 	assert(keylen == 192 || keylen == 128 || keylen == 256);
 	assert(aestype == 192 || aestype == 128 || aestype == 256);
 	printf("Testing AES%d with keylen %d ...\n", aestype,keylen);
@@ -340,13 +340,4 @@ void AES::testAES(int aestype=128, int keylen=192, int repeat_time=1000) {
 	delete [] in;
 	delete [] out;
 	delete [] din;
-}
-
-int main(int argc, char const *argv[])
-{
-	for (int type=128;type<=256;type+=64)
-		for (int klen=128;klen<=256;klen+=64)
-			AES::testAES(type,klen);
-	AES::demoAES();
-	return 0;
 }

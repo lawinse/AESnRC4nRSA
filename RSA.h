@@ -23,7 +23,7 @@ public:
 
 	static void cipher(ULL *in, int len, ULL *out, ULL _e, ULL _n);
 	static void decipher(ULL *in, int len, ULL *out, ULL _d, ULL _p, ULL _q);
-	static void testRSA(int txtlen, int repeat_time);
+	static void testRSA(int txtlen, int repeat_time=100);
 	static void demoRSA();
 private:
 	ULL p,q,phi,e,d,n;
@@ -32,9 +32,6 @@ private:
 	int enum_prime_less_than(int n, UI *p);
 	void generate_two_big_primes(ULL &a, ULL &b);
 	ULL exgcd(ULL a, ULL b, ULL& x, ULL& y);
-
-
-
 
 };
 

@@ -23,7 +23,8 @@ ULL mod_pro(ULL x,ULL y,ULL n) {
         y>>=1; 
     } 
     return ret; 
-} 
+}
+
 ULL mod(ULL a,ULL b,ULL c) { 
     ULL ret = 1; 
     while(b) { 
@@ -32,7 +33,8 @@ ULL mod(ULL a,ULL b,ULL c) {
         b >>= 1; 
     } 
     return ret; 
-} 
+}
+
 ULL RSA::ran() { 
     ULL ret=rand(); 
     return (ret<<31)+rand(); 
@@ -164,7 +166,7 @@ void RSA::demoRSA() {
 
 }
 
-void RSA::testRSA(int txtlen, int repeat_time=100) {
+void RSA::testRSA(int txtlen, int repeat_time) {
 	assert(txtlen>0);
 	srand(time(0));
 	printf("Testing RSA with txtlen %d ...\n",txtlen);
@@ -196,12 +198,4 @@ void RSA::testRSA(int txtlen, int repeat_time=100) {
 	delete [] out;
 	delete [] din;
 
-}
-
-
-int main(int argc, char const *argv[])
-{
-	RSA::testRSA(100);
-	RSA::demoRSA();
-	return 0;
 }

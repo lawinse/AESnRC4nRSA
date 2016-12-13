@@ -25,7 +25,7 @@ public:
 		if (i%16 != 15) printf("\n");
 	}
 
-	static void testAES(int aestype, int keylen, int repeat_time);
+	static void testAES(int aestype=128, int keylen=192, int repeat_time=1000);
 	static void demoAES();
 
 private:
