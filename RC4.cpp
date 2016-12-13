@@ -42,7 +42,7 @@ void RC4::decipher(uint8_t *in, int len, uint8_t *out, uint8_t *ks) {
 
 void RC4::testRC4(int keylen, int txtlen, int repeat_time=1000) {
 	assert(keylen > 4 || txtlen >= keylen);
-	printf("Testing RC4 with keylen %d ...\n",keylen);
+	printf("Testing RC4 with keylen %d and txtlen %d ...\n",keylen,txtlen);
 	fflush(stdout);
 	srand(time(0));
 
