@@ -122,20 +122,21 @@ ULL RSA::exgcd(ULL a, ULL b, ULL& x, ULL& y) {
     return gcd;
 }
 
-void RSA::cipher(ULL *in, int len, ULL *out, ULL _e, ULL _n) {
+void RSA::cipher(ULL *in, size_t len, ULL *out, ULL _e, ULL _n) {
 	for (int i=0; i<len; ++i) { 
 		assert(in[i] < _n);
 		out[i] = mod(in[i],_e,_n);
 	}
 }
 
-void RSA::decipher(ULL *in, int len, ULL *out, ULL _d, ULL _p, ULL _q) {
+void RSA::decipher(ULL *in, size_t len, ULL *out, ULL _d, ULL _p, ULL _q) {
 	ULL N = _p*_q;
 	for (int i=0; i<len; ++i) 
 		out[i] = mod(in[i],_d,N);
 }
 
 void RSA::demoRSA() {
+	printf("Demoing RSA ... \n");
 	srand(time(0));
 	RSA rsa;
 	rsa.print_key();
@@ -166,10 +167,10 @@ void RSA::demoRSA() {
 
 }
 
-void RSA::testRSA(int txtlen, int repeat_time) {
+void RSA::testRSA(size_t txtlen, int repeat_time) {
 	assert(txtlen>0);
 	srand(time(0));
-	printf("Testing RSA with txtlen %d ...\n",txtlen);
+	printf("Testing RSA with txtlen %lu ...\n",txtlen);
 
 	ULL *in = new ULL[txtlen];
 	ULL *out = new ULL[txtlen];

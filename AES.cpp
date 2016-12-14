@@ -303,10 +303,10 @@ void AES::demoAES() {
 	delete [] din;
 }
 
-void AES::testAES(int aestype, int keylen, int repeat_time) {
+void AES::testAES(size_t aestype, size_t keylen, int repeat_time) {
 	assert(keylen == 192 || keylen == 128 || keylen == 256);
 	assert(aestype == 192 || aestype == 128 || aestype == 256);
-	printf("Testing AES%d with keylen %d ...\n", aestype,keylen);
+	printf("Testing AES%lu with keylen %lu ...\n", aestype,keylen);
 	fflush(stdout);
 	srand(time(0));
 	

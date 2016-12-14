@@ -21,9 +21,9 @@ public:
 	void get_public_key(ULL &_e, ULL &_n) {_e=e,_n=n;}
 	void get_private_key(ULL &_d, ULL &_p, ULL &_q) {_p=p,_q=q,_d=d;}
 
-	static void cipher(ULL *in, int len, ULL *out, ULL _e, ULL _n);
-	static void decipher(ULL *in, int len, ULL *out, ULL _d, ULL _p, ULL _q);
-	static void testRSA(int txtlen, int repeat_time=100);
+	static void cipher(ULL *in, size_t len, ULL *out, ULL _e, ULL _n);
+	static void decipher(ULL *in, size_t len, ULL *out, ULL _d, ULL _p, ULL _q);
+	static void testRSA(size_t txtlen, int repeat_time=100);
 	static void demoRSA();
 private:
 	ULL p,q,phi,e,d,n;

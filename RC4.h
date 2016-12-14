@@ -16,10 +16,10 @@ public:
 	~RC4(){}
 	void set_for_cipher(int kl, uint8_t *_key);
 	void set_for_decipher(){K.clear();}
-	void cipher(uint8_t *in, int len, uint8_t *out, uint8_t *ks);
-	void decipher(uint8_t *in, int len, uint8_t *out, uint8_t *ks);
+	void cipher(uint8_t *in, size_t len, uint8_t *out, uint8_t *ks);
+	void decipher(uint8_t *in, size_t len, uint8_t *out, uint8_t *ks);
 
-	static void testRC4(int keylen, int txtlen, int repeat_time=1000);
+	static void testRC4(size_t keylen, size_t txtlen, int repeat_time=1000);
 	static void demoRC4();
 private:
 	int keylen;

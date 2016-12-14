@@ -11,7 +11,7 @@ void RC4::set_for_cipher(int kl=8,uint8_t *_key=NULL) {
 	}
 }
 
-void RC4::cipher(uint8_t *in, int len, uint8_t *out, uint8_t *ks) {
+void RC4::cipher(uint8_t *in, size_t len, uint8_t *out, uint8_t *ks) {
 	int i,j,t;
 	for(i=0;i<256;++i){
 		S[i]=i;
@@ -34,15 +34,15 @@ void RC4::cipher(uint8_t *in, int len, uint8_t *out, uint8_t *ks) {
 	}
 }
 
-void RC4::decipher(uint8_t *in, int len, uint8_t *out, uint8_t *ks) {
+void RC4::decipher(uint8_t *in, size_t len, uint8_t *out, uint8_t *ks) {
 	for (int k=0; k<len; ++k) {
 		out[k] = ks[k]^in[k];
 	}
 }
 
-void RC4::testRC4(int keylen, int txtlen, int repeat_time) {
+void RC4::testRC4(size_t keylen, size_t txtlen, int repeat_time) {
 	assert(keylen > 4 || txtlen >= keylen);
-	printf("Testing RC4 with keylen %d and txtlen %d ...\n",keylen,txtlen);
+	printf("Testing RC4 with keylen %lu and txtlen %lu ...\n",keylen,txtlen);
 	fflush(stdout);
 	srand(time(0));
 
