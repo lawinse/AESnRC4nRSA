@@ -7,7 +7,8 @@ RSA::RSA(){
 	n = p*q;
 	ULL y;
 	while(true) {
-		e = rand()%(phi-3)+3;
+		e = ran()%(phi-3)+3;
+		if (phi%e==0) continue;
 		ULL gcd = exgcd(e,phi,d,y);
 		if (gcd == 1ULL && d > 0 && d < n) break;
 	}
@@ -15,70 +16,69 @@ RSA::RSA(){
 }
 
 ULL mod_pro(ULL x,ULL y,ULL n) { 
-    ULL ret = 0,tmp = x % n; 
-    while(y) { 
-        if (y & 0x1)
-        	if((ret += tmp) > n) ret -= n; 
-        if ((tmp<<=1)>n) tmp -= n; 
-        y>>=1; 
-    } 
-    return ret; 
+	ULL ret = 0,tmp = x % n; 
+	while(y) { 
+		if (y & 0x1)
+			if((ret += tmp) > n) ret -= n; 
+		if ((tmp<<=1)>n) tmp -= n; 
+		y>>=1; 
+	} 
+	return ret; 
 }
 
 ULL mod(ULL a,ULL b,ULL c) { 
-    ULL ret = 1; 
-    while(b) { 
-        if (b & 0x1) ret = mod_pro(ret,a,c); 
-        a = mod_pro(a,a,c); 
-        b >>= 1; 
-    } 
-    return ret; 
+	ULL ret = 1; 
+	while(b) { 
+		if (b & 0x1) ret = mod_pro(ret,a,c); 
+		a = mod_pro(a,a,c); 
+		b >>= 1; 
+	} 
+	return ret; 
 }
 
 ULL RSA::ran() { 
-    ULL ret=rand(); 
-    return (ret<<31)+rand(); 
+	ULL ret=rand(); 
+	return (ret<<31)+rand(); 
 } 
 
 bool RSA::is_prime(ULL n,int t) { 
-    if(n < 2) return false; 
-    if(n == 2) return true; 
-    if(n%2==0) return false; 
-    ULL k=0,m,a,i; 
-    for(m = n-1;!(m & 1);m >>= 1,++k); 
-    while(t--) { 
-        a = mod(ran()%(n-2)+2,m,n); 
-        if(a != 1) { 
-            for(i = 0;i < k && a!=n-1; ++i) 
-                a = mod_pro(a,a,n); 
-            if(i >= k) return false; 
-        } 
-    } 
-    return true; 
+	if(n < 2) return false; 
+	if(n == 2) return true; 
+	if(n%2==0) return false; 
+	ULL k=0,m,a,i; 
+	for(m = n-1;!(m & 1);m >>= 1,++k); 
+	while(t--) { 
+		a = mod(ran()%(n-2)+2,m,n); 
+		if(a != 1) { 
+			for(i = 0;i < k && a!=n-1; ++i) 
+				a = mod_pro(a,a,n); 
+			if(i >= k) return false; 
+		} 
+	} 
+	return true; 
 }
 
 int RSA::enum_prime_less_than(int n, UI *p) {
 	if (n<=2) return 0;
-    bool *notPrime = new bool [n+1];
-    memset(notPrime, 0, sizeof(bool)*(n+1));
-    int cnt = 0;
-    p[0] = 1;
-    int tmp;
-    for (int i=2; i<n; ++i) {
-        if (!notPrime[i]) p[++cnt] = i;
-        for (int j=1; j<=cnt; ++j) {
-            if ((tmp = p[j]*i) >= n) break;
-            notPrime[tmp] = true;
-            if (i%p[j] == 0) break;
-        }
-    }
-    delete [] notPrime;
-    return cnt;
+	bool *notPrime = new bool [n+1];
+	memset(notPrime, 0, sizeof(bool)*(n+1));
+	int cnt = 0;
+	p[0] = 1;
+	int tmp;
+	for (int i=2; i<n; ++i) {
+		if (!notPrime[i]) p[++cnt] = i;
+		for (int j=1; j<=cnt; ++j) {
+			if ((tmp = p[j]*i) >= n) break;
+			notPrime[tmp] = true;
+			if (i%p[j] == 0) break;
+			}
+	}
+	delete [] notPrime;
+	return cnt;
 }
 
 /* http://bindog.github.io/blog/2014/07/19/how-to-generate-big-primes */
 void RSA::generate_two_big_primes(ULL &a, ULL &b) {
-	srand(time(0));
 	// 9-bits intergers
 	a = 1e8+ran()%(ULL(9e8));
 	if (a%2==0) ++a;
@@ -110,16 +110,16 @@ void RSA::generate_two_big_primes(ULL &a, ULL &b) {
 }
 
 ULL RSA::exgcd(ULL a, ULL b, ULL& x, ULL& y) {
-    if(b == 0) {
-        x = 1;
-        y = 0;
-        return a;
-    }
-    ULL gcd = exgcd(b, a%b, x, y);
-    ULL t = y;
-    y = x-(a/b)*(y);
-    x = t;
-    return gcd;
+	if(b == 0) {
+		x = 1;
+		y = 0;
+		return a;
+	}
+	ULL gcd = exgcd(b, a%b, x, y);
+	ULL t = y;
+	y = x-(a/b)*(y);
+	x = t;
+	return gcd;
 }
 
 void RSA::cipher(ULL *in, size_t len, ULL *out, ULL _e, ULL _n) {
@@ -140,7 +140,7 @@ void RSA::demoRSA() {
 	srand(time(0));
 	RSA rsa;
 	rsa.print_key();
-	int txtlen = 5;
+	int txtlen = 10;
 	ULL *in = new ULL[txtlen], *out = new ULL[txtlen], *din = new ULL[txtlen];
 	for (int i=0; i<txtlen; ++i) {in[i]=(ULL)rand();}
 	printf("original msg:\n");
@@ -175,8 +175,9 @@ void RSA::testRSA(size_t txtlen, int repeat_time) {
 	ULL *in = new ULL[txtlen];
 	ULL *out = new ULL[txtlen];
 	ULL *din = new ULL[txtlen];
-	RSA rsa;
+	
 	for (int t=0; t<repeat_time; ++t) {
+		RSA rsa;
 		for (int i=0; i<txtlen; ++i) {in[i]=(ULL)rand();}
 		ULL _e,_n,_d,_p,_q;
 		rsa.get_public_key(_e,_n);
