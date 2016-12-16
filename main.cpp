@@ -12,7 +12,6 @@ int main(int argc, char const *argv[])
 	RSA::testRSA(128,200);
 	RSA::demoRSA();
 	
-	RC4 rc4;
 	RC4::testRC4(128,1024);
 	RC4::demoRC4();
 	return 0;

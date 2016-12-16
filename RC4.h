@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <vector>
 #include <time.h>
+#include <string.h>
 
 #define BITS_PER_BYTES 8
 #define MAX_VALUE (1<<(BITS_PER_BYTES))
@@ -15,7 +16,7 @@ public:
 	RC4(){};
 	~RC4(){}
 	void set_for_cipher(int kl, uint8_t *_key);
-	void set_for_decipher(){K.clear();}
+	void set_for_decipher(){K.clear();memset(S,0,sizeof(S)),memset(T,0,sizeof(T));}
 	void cipher(uint8_t *in, size_t len, uint8_t *out, uint8_t *ks);
 	void decipher(uint8_t *in, size_t len, uint8_t *out, uint8_t *ks);
 

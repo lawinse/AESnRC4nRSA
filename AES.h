@@ -15,15 +15,7 @@ public:
 	~AES();
 	void cipher(uint8_t *in, uint8_t *out);
 	void decipher(uint8_t *in, uint8_t *out);
-	void show_kep(){
-		printf("key_expansion is:\n");
-		int i;
-		for (i=0; i<(Nb*(Nr+1)*4); ++i){
-			printf("%x", kep[i]);
-			printf(i%16==15?"\n":"\t");
-		}
-		if (i%16 != 15) printf("\n");
-	}
+	void show_kep();
 
 	static void testAES(size_t aestype=128, size_t keylen=192, int repeat_time=1000);
 	static void demoAES();
@@ -37,7 +29,8 @@ private:
 	int Nk, Nr;
 	int AES_TYPE;
 	uint8_t gf_mul(uint8_t a, uint8_t b);
-	void gf_addword(uint8_t *a, uint8_t *b, uint8_t *ret);
+	uint8_t gf_add(uint8_t a, uint8_t b);
+	uint8_t gf_sub(uint8_t a, uint8_t b);
 	void gf_mulword(uint8_t *a, uint8_t *b, uint8_t *ret);
 	void sub_word(uint8_t *word);
 	void sub_byte(uint8_t &byte, uint8_t *box);

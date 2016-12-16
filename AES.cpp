@@ -20,6 +20,16 @@ AES::~AES() {
 	delete [] kep;
 }
 
+void AES::show_kep() {
+	printf("key_expansion is:\n");
+	int i;
+	for (i=0; i<(Nb*(Nr+1)*4); ++i){
+		printf("%x", kep[i]);
+		printf(i%16==15?"\n":"\t");
+	}
+	if (i%16 != 15) printf("\n");
+}
+
 void AES::cipher(uint8_t *in, uint8_t *out) {
 	uint8_t *state = new uint8_t[4*Nb];
 
@@ -74,21 +84,26 @@ void AES::decipher(uint8_t *in, uint8_t *out) {
 	delete [] state;
 }
 
+
+inline uint8_t AES::gf_add(uint8_t a, uint8_t b) {
+	return a^b;
+}
+
+inline uint8_t AES::gf_sub(uint8_t a, uint8_t b) {
+	return a^b;
+}
+
 /* REF: http://en.wikipedia.org/wiki/Finite_field_arithmetic */
 uint8_t AES::gf_mul(uint8_t a, uint8_t b) {
 	uint8_t ret = 0, carry;
 	for (int i=0; i<8; ++i) {
-		if (b&1) ret ^= a;
+		if (b&1) ret = gf_add(ret,a);
 		carry = a & 0x80;
 		a <<= 1;
-		if (carry) a ^= 0x1b; //m(x) = x8 + x4 + x3 + x + 1
+		if (carry) a = gf_sub(a,0x1b); //m(x) = x8 + x4 + x3 + x + 1
 		b >>= 1;
 	}
 	return (uint8_t) ret;
-}
-
-void AES::gf_addword(uint8_t *a, uint8_t *b, uint8_t *ret) {
-	for (int i=0; i<4; ++i) ret[i] = a[i]^b[i];
 }
 
 void AES::gf_mulword(uint8_t *a, uint8_t *b, uint8_t *ret) {
